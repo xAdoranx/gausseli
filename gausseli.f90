@@ -1,11 +1,13 @@
 program gausseli
   use accuracy
+  use eqsolver
   Implicit none
 
-  integer :: ii, jj, dim, nmax
+  integer :: ii, jj, dim
   integer, allocatable :: num(:)
-  real(dp), allocatable :: onemat(:,:), Rarray(:,:), Larray(:,:), Parray(:,:), preres(:), res(:)&
-      &, bvec(:), tmp(:,:)
+  real(dp), allocatable :: Rarray(:,:), Larray(:,:), Parray(:,:), preres(:), res(:), bvec(:),&
+      & array(:,:)
+  
   
   character(len=26) :: outputform = '(1000000F10.2)'
 
@@ -18,56 +20,21 @@ program gausseli
     if (dim <= 0) then
       exit mainloop
     end if
-    
-    allocate(Rarray(dim,dim))
+
+    allocate(array(dim,dim))
     allocate(bvec(dim))
     
-    read(21,*) Rarray
+    read(21,*) array
     
     read(21,*) bvec
-    Rarray = transpose(Rarray)
+    array = transpose(array)
 
     write(*,*) "Input Matrix:"
     do ii = 1, dim
-      write(*,outputform) Rarray(ii,:)
+      write(*,outputform) array(ii,:)
     end do
 
-    allocate(onemat(dim,dim))
-    allocate(Larray(dim,dim))
-    allocate(Parray(dim,dim))
-    onemat = 0
-    do ii=1, dim
-      onemat(ii,ii)=1
-    end do
-    Larray = onemat
-    Parray = onemat
-
-    allocate(tmp(1,dim))
-    gauss: do ii = 1, dim
-
-      nmax = ii - 1 + maxloc(abs(Rarray(ii:dim,ii)),dim=1) !pivot
-
-      tmp(1,:) = Rarray(ii,:)
-      Rarray(ii,:) = Rarray(nmax,:)
-      Rarray(nmax,:) = tmp(1,:)
-      
-      tmp(1,:) = Parray(ii,:)
-      Parray(ii,:) = Parray(nmax,:)
-      Parray(nmax,:) = tmp(1,:)
-
-      do jj = ii + 1, dim
-        tmp(1,1)= Rarray(jj,ii)/Rarray(ii,ii)
-        
-        Rarray(jj,:) = Rarray(jj,:)-(Rarray(ii,:) * tmp(1,1))
-        Larray(jj,:) = Larray(jj,:)-(Larray(ii,:) * tmp(1,1))       
-        
-      end do
-      
-      if (abs(Rarray(ii,ii)) < 1E-12_dp) then
-        write(*,*) "underterminated System"
-        cycle mainloop
-      end if  
-    end do gauss
+    call ludecompose(array, Rarray, Larray, Parray)
 
     write(11,*) "Upper triangle matrix:"
     do ii = 1,dim
@@ -99,8 +66,7 @@ program gausseli
 
     deallocate(res)
     deallocate(preres)
-    deallocate(onemat)
-    deallocate(tmp)
+    deallocate(array)
     deallocate(Rarray)
     deallocate(Larray)
     deallocate(Parray)
