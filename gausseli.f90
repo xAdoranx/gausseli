@@ -1,9 +1,9 @@
 program gausseli
+  use accuracy
   Implicit none
 
   integer :: ii, jj, dim, nmax
   integer, allocatable :: num(:)
-  integer, parameter :: dp = selected_real_kind(12,99)
   real(dp), allocatable :: onemat(:,:), Rarray(:,:), Larray(:,:), Parray(:,:), preres(:), res(:)&
       &, bvec(:), tmp(:,:)
   
