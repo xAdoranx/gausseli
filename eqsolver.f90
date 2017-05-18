@@ -20,6 +20,7 @@ contains
     do ii=1,dim
       onemat(ii,ii)=1
     end do
+    
 
     Larray = onemat
     Parray = onemat
@@ -56,5 +57,33 @@ contains
 
   end subroutine ludecompose
 
+
+  
+  subroutine substituteback(Rarray, Larray, Parray, bvec, res)
+
+    real(dp), intent(in) :: Rarray(:,:), Larray(:,:), Parray(:,:), bvec(:)
+    real(dp), intent(out), allocatable :: res(:)
+    real(dp), allocatable :: preres(:), bveccalc(:)
+    integer :: ii, dim
+
+    dim = size(Rarray,dim=1)
+    
+    allocate(res(dim))
+    allocate(preres(dim))
+    allocate(bveccalc(dim))
+    bveccalc = matmul(Parray, bvec)
+    preres(1) = bveccalc(1)
+    do ii = 2, dim
+      preres(ii) = bveccalc(ii) - dot_product(Larray(ii,1:ii-1),preres(1:ii-1))
+    end do
+    res(dim) = preres(dim)/Rarray(dim,dim)
+    do ii = dim-1, 1, -1
+      res(ii) = (preres(ii) - dot_product(Rarray(ii,ii+1:dim),preres(ii+1:dim)))/Rarray(ii,ii)
+    end do
+
+    deallocate(preres)
+    deallocate(bveccalc)
+  end subroutine substituteback
+  
 
 end module eqsolver
