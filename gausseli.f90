@@ -4,11 +4,12 @@ program gausseli
   use eqsolver
   Implicit none
 
-  integer :: dim
-  real(dp), allocatable :: Rarray(:,:), Larray(:,:), Parray(:,:), res(:), bvec(:),&
-      & array(:,:)
+  integer :: dim, ii
+  real(dp), allocatable :: res(:), bvec(:), array(:,:)
   logical :: cancel
+  !character(len=26) :: outputform = '(1000000F10.2)'
 
+  
   open(21, file="gauss.inp", status="old", form="formatted", action="read")
   open(11, file="output.dat", status="replace", form="formatted", action="write")
   
@@ -19,17 +20,15 @@ program gausseli
       exit mainloop
     end if
       
-    call ludecompose(array, Rarray, Larray, Parray)
+    call ludecompose(dim, array)
 
-    deallocate(array)
+    !do ii=1,4*dim
+    !  write(*,outputform) array(ii,:)
+    !end do    
 
-    call substituteback(Rarray, Larray, Parray, bvec, res)
+    call substituteback(dim, array, bvec, res)
 
-    deallocate(Parray)
-    deallocate(Larray)
-    deallocate(bvec)
-
-    call writeoutput(Rarray, res)
+    call writeoutput(dim, array, res)
         
   end do mainloop
   close(11)
