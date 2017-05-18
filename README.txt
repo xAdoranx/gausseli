@@ -1,7 +1,8 @@
 This program will solve a system like Ax=b
 
-The files "accuracy.f90", "io.f90", "eqsolver.f90", "gausseli.f90"
-must be compiled in this order.
+To compile the program use GNUmakefile by typing "make"
+For cleaning unneccessary files type "make clean"
+To clean the whole program type "make realclean"
 
 
 Required input file named "gauss.inp".
@@ -17,7 +18,7 @@ Formatted like
 .
 .
 .
-0           ! with dimension <= 0 the programm will be stopped
+0           ! If dimension <= 0 the programm will be stopped
 
 Solution is given in file "output.dat"
 
