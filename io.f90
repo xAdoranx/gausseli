@@ -4,10 +4,10 @@ module io
 
 contains
   
-  subroutine readinput(dim,array,bvec,cancel)
+  subroutine readinput(array,bvec,cancel)
 
     real(dp), allocatable, intent(out) :: array(:,:), bvec(:)
-    integer, intent(out) :: dim
+    integer :: dim
     logical, intent(out) :: cancel
 
     read(21,*) dim
@@ -16,34 +16,31 @@ contains
       return
     end if
 
-    allocate(array(4*dim,dim))
+    allocate(array(dim,dim))
     allocate(bvec(dim))
     
-    read(21,*) array(1:dim,:)
+    read(21,*) array
     
     read(21,*) bvec
-    array(1:dim,:) = transpose(array(1:dim,:))
+    array = transpose(array)
     
     
   end subroutine readinput
 
-  subroutine writeoutput(dim, array, res)
-    real(dp), allocatable, intent(inout) :: array(:,:), res(:)
-    integer, intent(in) :: dim
-    integer :: ii
+  subroutine writeoutput(Rarray, res)
+    real(dp), intent(in) :: Rarray(:,:), res(:)
+    integer :: ii, dim
     character(len=26) :: outputform = '(1000000F10.2)'
 
+    dim = size(Rarray, dim=1)
     write(11,*) "Upper triangle matrix:"
     do ii = 1,dim
-      write(11,outputform) array(dim+ii,:)
+      write(11,outputform) Rarray(ii,:)
     end do
 
     output: do ii = 1,dim
       write(11,"(A,I0,A2,F10.6)") "x_", ii, "=", res(ii)
     end do output
-
-    deallocate(array)
-    deallocate(res)
     
   end subroutine writeoutput
   
