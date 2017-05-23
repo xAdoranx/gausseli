@@ -6,8 +6,8 @@ contains
   
   subroutine readinput(array,bvec,cancel)
 
-    real(dp), allocatable, intent(out) :: array(:,:), bvec(:)
-    integer :: dim
+    real(dp), allocatable, intent(out) :: array(:,:), bvec(:,:)
+    integer :: dim, bdim
     logical, intent(out) :: cancel
 
     read(21,*) dim
@@ -17,10 +17,12 @@ contains
     end if
 
     allocate(array(dim,dim))
-    allocate(bvec(dim))
     
     read(21,*) array
-    
+
+    read(21,*) bdim
+
+    allocate(bvec(dim,bdim))
     read(21,*) bvec
     array = transpose(array)
     
@@ -28,7 +30,7 @@ contains
   end subroutine readinput
 
   subroutine writeoutput(Rarray, res)
-    real(dp), intent(in) :: Rarray(:,:), res(:)
+    real(dp), intent(in) :: Rarray(:,:), res(:,:)
     integer :: ii, dim
     character(len=26) :: outputform = '(1000000F10.2)'
 
@@ -39,7 +41,7 @@ contains
     end do
 
     output: do ii = 1,dim
-      write(11,"(A,I0,A2,F10.6)") "x_", ii, "=", res(ii)
+      write(11,"(A,I0,A2,100(F10.6','))") "x_", ii, "=", res(ii,:)
     end do output
     
   end subroutine writeoutput

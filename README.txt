@@ -12,9 +12,12 @@ Formatted like
 1 2 3       !
 1 2 3       ! rows of the Matrix A
 1 2 3       !
-2 3 4       ! solution vector b
+2           ! amount of solution vectors
+2 3 4       ! solution vector b 1
+3 4 5       ! solution vector b 2
 5
 3 2 1 5 3
+.
 .
 .
 .
