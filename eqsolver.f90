@@ -79,10 +79,6 @@ contains
     do ii = 2, dim
       preres(ii) = bveccalc(ii) - dot_product(Larray(ii,1:ii-1),preres(1:ii-1))
     end do
-
-    do ii=1,dim
-      write(*,*) Rarray(ii,:)
-    end do
     
     !Backward
     res(dim) = preres(dim)/Rarray(dim,dim)

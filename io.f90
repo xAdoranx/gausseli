@@ -4,11 +4,12 @@ module io
 
 contains
   
-  subroutine readinput(array,bvec,cancel)
+  subroutine readinput(array,bvec,cancel,outform)
 
     real(dp), allocatable, intent(out) :: array(:,:), bvec(:)
     integer :: dim
     logical, intent(out) :: cancel
+    character(len=8), intent(out) :: outform
 
     read(21,*) dim
     if (dim <= 0) then
@@ -23,26 +24,63 @@ contains
     
     read(21,*) bvec
     array = transpose(array)
-    
+
+    read(21,*) outform
     
   end subroutine readinput
 
-  subroutine writeoutput(Rarray, res)
+  subroutine writetofile(Rarray, res, outform)
     real(dp), intent(in) :: Rarray(:,:), res(:)
+    character(len=8), intent(in) :: outform
     integer :: ii, dim
     character(len=26) :: outputform = '(1000000F10.2)'
 
     dim = size(Rarray, dim=1)
-    write(11,*) "Upper triangle matrix:"
-    do ii = 1,dim
-      write(11,outputform) Rarray(ii,:)
-    end do
 
-    output: do ii = 1,dim
-      write(11,"(A,I0,A2,F10.6)") "x_", ii, "=", res(ii)
-    end do output
+    select case (outform)
+    case ("simpfile")
+      do ii = 1,dim
+        write(11,"(ES23.15)") res(ii)
+      end do
+    case ("compfile")
+      write(11,*) "Upper triangle matrix:"
+      do ii = 1,dim
+        write(11,outputform) Rarray(ii,:)
+      end do
+      do ii =1,dim
+        write(11,"(A,I0,A2,ES23.15)") "x_", ii, "=", res(ii)
+      end do
+    end select
     
-  end subroutine writeoutput
+    
+  end subroutine writetofile
+  
+
+  subroutine writetoscreen(Rarray, res, outform)
+
+    real(dp), intent(in) :: Rarray(:,:), res(:)
+    character(len=8), intent(in) :: outform
+    integer :: ii, dim
+    character(len=26) :: outputform = '(1000000F10.2)'
+
+    dim = size(Rarray, 1)
+    select case (outform)
+    case ("simpscrn")
+      do ii = 1,dim
+        write(*,"(ES23.15)") res(ii)
+      end do
+    case ("compscrn")
+      write(*,*) "Upper triangle matrix:"
+      do ii = 1,dim
+        write(*,outputform) Rarray(ii,:)
+      end do
+      do ii =1,dim
+        write(*,"(A,I0,A2,ES23.15)") "x_", ii, "=", res(ii)
+      end do
+    end select
+    
+
+  end subroutine writetoscreen
   
 
 end module io
