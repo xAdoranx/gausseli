@@ -23,6 +23,8 @@ contains
 
     read(21,*) bdim
 
+    write(*,*) bdim
+
     allocate(bvec(dim,bdim))
     read(21,*) bvec
     array = transpose(array)
@@ -43,7 +45,7 @@ contains
     select case (outform)
     case ("simpfile")
       do ii = 1,dim
-        write(11,"(ES23.15)") res(ii,:)
+        write(11,"(100ES23.15)") res(ii,:)
       end do
     case ("compfile")
       write(11,*) "Upper triangle matrix:"
@@ -51,7 +53,7 @@ contains
         write(11,outputform) Rarray(ii,:)
       end do
       do ii =1,dim
-        write(11,"(A,I0,A2,ES23.15)") "x_", ii, "=", res(ii,:)
+        write(11,"(A,I0,A2,100ES23.15)") "x_", ii, "=", res(ii,:)
       end do
     end select
     
@@ -70,7 +72,7 @@ contains
     select case (outform)
     case ("simpscrn")
       do ii = 1,dim
-        write(*,"(ES23.15)") res(ii)
+        write(*,"(100ES23.15)") res(ii,:)
       end do
     case ("compscrn")
       write(*,*) "Upper triangle matrix:"
@@ -78,7 +80,7 @@ contains
         write(*,outputform) Rarray(ii,:)
       end do
       do ii =1,dim
-        write(*,"(A,I0,A2,ES23.15)") "x_", ii, "=", res(ii)
+        write(*,"(A,I0,A2,100ES23.15)") "x_", ii, "=", res(ii,:)
       end do
     end select
     
