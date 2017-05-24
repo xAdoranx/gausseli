@@ -13,8 +13,7 @@ Formatted like
 1 2 3       ! rows of the Matrix A
 1 2 3       !
 2 3 4       ! solution vector b
-.true.      ! .true. = write to file
-.false.     ! .true. = simple output of solution vector
+simpscrn    ! Defines output options
 5
 3 2 1 5 3
 .
@@ -22,7 +21,11 @@ Formatted like
 .
 0           ! If dimension <= 0 the programm will be stopped
 
-Solution is given in file "output.dat"
+Outputoptions:
+      simpfile: only solutionvector on screen
+      compfile: full output on screen
+      simpscrn: only solutionvektor in file
+      compscrn: full output in file
 
 Error: "underterminated system" will occur, if the input matrix is underterminated
        the program will continue with the next matrices.
