@@ -13,6 +13,8 @@ Formatted like
 1 2 3       ! rows of the Matrix A
 1 2 3       !
 2 3 4       ! solution vector b
+.true.      ! .true. = write to file
+.false.     ! .true. = simple output of solution vector
 5
 3 2 1 5 3
 .
