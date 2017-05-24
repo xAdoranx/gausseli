@@ -6,8 +6,8 @@ contains
   
   subroutine readinput(array,bvec,cancel,outform)
 
-    real(dp), allocatable, intent(out) :: array(:,:), bvec(:)
-    integer :: dim
+    real(dp), allocatable, intent(out) :: array(:,:), bvec(:,:)
+    integer :: dim, bdim
     logical, intent(out) :: cancel
     character(len=8), intent(out) :: outform
 
@@ -18,10 +18,12 @@ contains
     end if
 
     allocate(array(dim,dim))
-    allocate(bvec(dim))
     
     read(21,*) array
-    
+
+    read(21,*) bdim
+
+    allocate(bvec(dim,bdim))
     read(21,*) bvec
     array = transpose(array)
 
@@ -29,18 +31,19 @@ contains
     
   end subroutine readinput
 
+
   subroutine writetofile(Rarray, res, outform)
-    real(dp), intent(in) :: Rarray(:,:), res(:)
+    real(dp), intent(in) :: Rarray(:,:), res(:,:)
     character(len=8), intent(in) :: outform
     integer :: ii, dim
     character(len=26) :: outputform = '(1000000F10.2)'
 
-    dim = size(Rarray, dim=1)
-
+    dim = size(Rarray, 1)
+    
     select case (outform)
     case ("simpfile")
       do ii = 1,dim
-        write(11,"(ES23.15)") res(ii)
+        write(11,"(ES23.15)") res(ii,:)
       end do
     case ("compfile")
       write(11,*) "Upper triangle matrix:"
@@ -48,7 +51,7 @@ contains
         write(11,outputform) Rarray(ii,:)
       end do
       do ii =1,dim
-        write(11,"(A,I0,A2,ES23.15)") "x_", ii, "=", res(ii)
+        write(11,"(A,I0,A2,ES23.15)") "x_", ii, "=", res(ii,:)
       end do
     end select
     
@@ -58,7 +61,7 @@ contains
 
   subroutine writetoscreen(Rarray, res, outform)
 
-    real(dp), intent(in) :: Rarray(:,:), res(:)
+    real(dp), intent(in) :: Rarray(:,:), res(:,:)
     character(len=8), intent(in) :: outform
     integer :: ii, dim
     character(len=26) :: outputform = '(1000000F10.2)'

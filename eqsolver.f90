@@ -9,7 +9,7 @@ contains
     real(dp), allocatable :: tmp(:,:), onemat(:,:)
     integer :: nmax, ii, jj, dim
 
-    dim = size(array,dim=1)
+    dim = size(array,1)
     allocate(onemat(dim,dim))
     onemat = 0
     do ii=1,dim
@@ -61,30 +61,31 @@ contains
   
   subroutine substituteback(array, Rarray, Larray, Parray, bvec, res)
 
-    real(dp), intent(in) :: array(:,:), Rarray(:,:), Larray(:,:), Parray(:,:), bvec(:)
-    real(dp), intent(out), allocatable :: res(:)
-    integer :: dim
-    real(dp), allocatable :: preres(:), bveccalc(:)
+    real(dp), intent(in) :: array(:,:), Rarray(:,:), Larray(:,:), Parray(:,:), bvec(:,:)
+    real(dp), intent(out), allocatable :: res(:,:)
+    integer :: dim, bdim
+    real(dp), allocatable :: preres(:,:), bveccalc(:,:)
     integer :: ii
 
-    dim = size(array,dim=1)
-    allocate(res(dim))
-    allocate(preres(dim))
-    allocate(bveccalc(dim))
+    dim = size(array, 1)
+    bdim = size(bvec, 2)
+    allocate(res(dim,bdim))
+    allocate(preres(dim,bdim))
+    allocate(bveccalc(dim,bdim))
     
     bveccalc = matmul(Parray(1:dim,:), bvec)
 
     !Forward
-    preres(1) = bveccalc(1)
+    preres(1,:) = bveccalc(1,:)
     do ii = 2, dim
-      preres(ii) = bveccalc(ii) - dot_product(Larray(ii,1:ii-1),preres(1:ii-1))
+      preres(ii,:) = bveccalc(ii,:) - matmul(Larray(ii,1:ii-1),preres(1:ii-1,:))
     end do
     
     !Backward
-    res(dim) = preres(dim)/Rarray(dim,dim)
+    res(dim,:) = preres(dim,:)/Rarray(dim,dim)
     do ii = dim-1, 1, -1
-      res(ii) = (preres(ii) - dot_product(Rarray(ii,ii+1:dim),&
-          &res(ii+1:dim)))/Rarray(ii,ii)
+      res(ii,:) = (preres(ii,:) - matmul(Rarray(ii,ii+1:dim),&
+          &res(ii+1:dim,:)))/Rarray(ii,ii)
     end do
 
   end subroutine substituteback

@@ -5,7 +5,7 @@ program gausseli
   Implicit none
 
   integer :: ii
-  real(dp), allocatable :: res(:), bvec(:), array(:,:), Rarray(:,:), Larray(:,:), Parray(:,:)
+  real(dp), allocatable :: res(:,:), bvec(:,:), array(:,:), Rarray(:,:), Larray(:,:), Parray(:,:)
   logical :: cancel
   character(len=8) :: outform
   !character(len=26) :: inputfile  = "gauss.inp"
