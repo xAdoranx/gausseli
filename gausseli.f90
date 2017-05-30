@@ -5,7 +5,7 @@ program gausseli
   Implicit none
 
   integer :: ii
-  real(dp), allocatable :: res(:,:), bvec(:,:), array(:,:), Rarray(:,:), Larray(:,:), Parray(:,:)
+  real(dp), allocatable :: res(:,:), bvec(:,:), array(:,:), RLarray(:,:), Parray(:,:)
   logical :: cancel
   character(len=8) :: outform
   !character(len=26) :: inputfile  = "gauss.inp"
@@ -23,22 +23,21 @@ program gausseli
       exit mainloop
     end if
       
-    call ludecompose(array, Rarray, Larray, Parray)
+    call ludecompose(array, RLarray, Parray)
 
-    call substituteback(array, Rarray, Larray, Parray, bvec, res)
+    call substituteback(RLarray, Parray, bvec, res)
 
     select case (outform)
     case ("simpfile", "compfile")
-      call writetofile(Rarray, res, outform)
+      call writetofile(RLarray, res, outform)
     case ("simpscrn", "compscrn")
-      call writetoscreen(Rarray, res, outform)
+      call writetoscreen(RLarray, res, outform)
     end select
       
     
 
     deallocate(array)
-    deallocate(Rarray)
-    deallocate(Larray)
+    deallocate(RLarray)
     deallocate(Parray)
     deallocate(bvec)
     

@@ -34,21 +34,27 @@ contains
   end subroutine readinput
 
 
-  subroutine writetofile(Rarray, res, outform)
-    real(dp), intent(in) :: Rarray(:,:), res(:,:)
+  subroutine writetofile(RLarray, res, outform)
+    real(dp), intent(in) :: RLarray(:,:), res(:,:)
     character(len=8), intent(in) :: outform
     integer :: ii, dim
     character(len=26) :: outputform = '(1000000F10.2)'
+    real(dp), allocatable :: Rarray(:,:)
 
-    dim = size(Rarray, 1)
-    
+    dim = size(RLarray, 1)
+
+    allocate(Rarray(dim,dim))
+    do ii = 1,dim
+      Rarray(ii,ii:dim) = RLarray(ii,ii:dim)
+    end do
+        
     select case (outform)
     case ("simpfile")
       do ii = 1,dim
         write(11,"(100ES23.15)") res(ii,:)
       end do
     case ("compfile")
-      write(11,*) "Upper triangle matrix:"
+      write(11,*) "upper triangle matrix:"
       do ii = 1,dim
         write(11,outputform) Rarray(ii,:)
       end do
@@ -61,14 +67,22 @@ contains
   end subroutine writetofile
   
 
-  subroutine writetoscreen(Rarray, res, outform)
+  subroutine writetoscreen(RLarray, res, outform)
 
-    real(dp), intent(in) :: Rarray(:,:), res(:,:)
+    real(dp), intent(in) :: RLarray(:,:), res(:,:)
     character(len=8), intent(in) :: outform
     integer :: ii, dim
     character(len=26) :: outputform = '(1000000F10.2)'
+    real(dp), allocatable :: Rarray(:,:)
 
-    dim = size(Rarray, 1)
+    dim = size(RLarray, 1)
+
+    allocate(Rarray(dim,dim))
+
+    do ii = 1,dim
+      Rarray(ii,ii:dim) = RLarray(ii,ii:dim)
+    end do
+    
     select case (outform)
     case ("simpscrn")
       do ii = 1,dim
