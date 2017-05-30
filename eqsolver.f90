@@ -1,11 +1,19 @@
+!> Module to solve a system like Ax=b
 module eqsolver
   use accuracy
   implicit none
 
 contains
+  !> Routine to make upper and under triangle matrix of the input matrix A.
+  !!
+  !! Requires a square matrix. Uses row pivot.
   subroutine ludecompose(array, RLarray, Parray)
+    !> Input matrix A
     real(dp), intent(in) :: array(:,:)
-    real(dp), allocatable, intent(out) :: RLarray(:,:), Parray(:,:)
+    !> Matrix that will contain upper and under triangle matrix
+    real(dp), allocatable, intent(out) :: RLarray(:,:)
+    !> Matrix, that will contain the done pivots
+    real(dp), allocatable, intent(out) :: Parray(:,:)
     real(dp), allocatable :: tmp(:,:), onemat(:,:)
     integer :: nmax, ii, jj, dim
 
@@ -56,10 +64,19 @@ contains
   end subroutine ludecompose
 
 
-  
+  !> Routine, that will solve solution vectors
+  !!
+  !! Requires upper and under triangle matrix and a matrix containing the pivots.
+  !! Can solve the system for several solution vectors
   subroutine substituteback(RLarray, Parray, bvec, res)
 
-    real(dp), intent(in) :: RLarray(:,:), Parray(:,:), bvec(:,:)
+    !> Matrix, that contains upper and under triangle matrix
+    real(dp), intent(in) :: RLarray(:,:)
+    !> Matrix, that contains the pivots of the triangle matrix
+    real(dp), intent(in) :: Parray(:,:)
+    !> Matrix, that contains all solution vectors
+    real(dp), intent(in) :: bvec(:,:)
+    !> the solution vectors will be safed here
     real(dp), intent(out), allocatable :: res(:,:)
     integer :: dim, bdim
     real(dp), allocatable :: preres(:,:), bveccalc(:,:)

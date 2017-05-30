@@ -1,3 +1,6 @@
+!> program to solve a given system like Ax=b.
+!!
+!! Requires modules accuracy, io, eqsolver to work.
 program gausseli
   use accuracy
   use io
@@ -11,9 +14,9 @@ program gausseli
   !character(len=26) :: inputfile  = "gauss.inp"
   !character(len=26) :: outputfile = "output.dat"
 
-  !Inputfile:
+  !> Inputfile is defined with the ID 21
   open(21, file="gauss.inp", status="old", form="formatted", action="read")
-  !Outputfile:
+  !> Outputfile is defined with the ID 11
   open(11, file="output.dat", status="replace", form="formatted", action="write")
   
   mainloop: do
